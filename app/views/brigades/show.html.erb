@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @brigade.title %>
+</p>
+
+<p>
+  <b>Count of workers:</b>
+  <%= @brigade.count_of_workers %>
+</p>
+
+<p>
+  <b>Price:</b>
+  <%= @brigade.price %>
+</p>
+
+<p>
+  <b>Country:</b>
+  <%= @brigade.country.title %>
+</p>
+
+
+<%= link_to 'Edit', edit_brigade_path(@brigade) %> |
+<%= link_to 'Back', brigades_path %>
