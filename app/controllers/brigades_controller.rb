@@ -44,7 +44,7 @@ class BrigadesController < ApplicationController
 
     respond_to do |format|
       if @brigade.save
-        format.html { redirect_to @brigade, notice: 'Brigade was successfully created.' }
+        format.html { redirect_to brigades_url, notice: 'Brigade was successfully created.' }
         format.json { render json: @brigade, status: :created, location: @brigade }
       else
         format.html { render action: "new" }
@@ -60,7 +60,7 @@ class BrigadesController < ApplicationController
 
     respond_to do |format|
       if @brigade.update_attributes(params[:brigade])
-        format.html { redirect_to @brigade, notice: 'Brigade was successfully updated.' }
+        format.html { redirect_to brigades_url, notice: 'Brigade was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

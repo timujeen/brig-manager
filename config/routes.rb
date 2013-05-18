@@ -1,4 +1,6 @@
 Brig::Application.routes.draw do
+  get "jobs", to: "jobs#index"
+
   resources :brigades
 
 

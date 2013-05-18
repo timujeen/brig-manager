@@ -12,22 +12,26 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :title %><br />
+    <%= f.label :title, "Название" %><br />
     <%= f.text_field :title %>
   </div>
   <div class="field">
-    <%= f.label :count_of_workers %><br />
+    <%= f.label :count_of_workers, "Количество рабочих" %><br />
     <%= f.number_field :count_of_workers %>
   </div>
   <div class="field">
-    <%= f.label :price %><br />
+    <%= f.label :price, "Стоимость" %><br />
     <%= f.text_field :price %>
   </div>
   <div class="field">
-    <%= f.label :country_id %><br />
-    <%= f.collection_select :country_id, Country.all, :id, :title %>
+    <%= f.label :country_id, "Страна" %><br />
+    <%= f.collection_select :country_id, Country.all, :id, :title, {prompt: 'Выберите страну'} %>
+  </div>
+  <div class="field">
+    <%= f.label :job_tokens, "Виды работ" %><br />
+    <%= f.text_field :job_tokens, data: {load: @brigade.jobs} %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Сохранить" %>
   </div>
 <% end %>

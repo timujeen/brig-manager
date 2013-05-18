@@ -9,3 +9,5 @@ Country.delete_all
 Country.create!(title: 'Russia')
 Country.create!(title: 'China')
 Country.create!(title: 'Germany')
+
+Job.delete_all
