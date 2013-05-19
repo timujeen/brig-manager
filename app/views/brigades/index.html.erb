@@ -15,7 +15,7 @@
   <tr>
     <td><%= brigade.title %></td>
     <td><%= brigade.count_of_workers %></td>
-    <td><%= brigade.price %></td>
+    <td><%= number_to_currency(brigade.price) %></td>
     <td><%= brigade.country.title %></td>
     <td><%= brigade.job_list %></td>
     <td><%= link_to 'Изменить', edit_brigade_path(brigade) %></td>
