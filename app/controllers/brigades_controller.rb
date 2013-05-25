@@ -2,10 +2,19 @@ class BrigadesController < ApplicationController
   # GET /brigades
   # GET /brigades.json
   def index
-    @brigades = Brigade.all
+
+    set_filter "off" if params[:filtering] == "disable"
+
+    if params[:commit] #filtration is on
+      set_filter "on"
+      @brigades = brigades_filtered_by_options
+    else
+      @brigades = Brigade.order(:price)
+    end
 
     respond_to do |format|
       format.html # index.html.erb
+      format.js
       format.json { render json: @brigades }
     end
   end
@@ -80,4 +89,35 @@ class BrigadesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  def brigades_filtered_by_options
+    if session[:filter][:country_id] > 0
+      b = Brigade.where(country_id: session[:filter][:country_id]) if session[:filter][:country_id] > 0 
+    else
+      b = Brigade.order(:price)
+    end
+    b
+  end
+
+  private
+
+  def set_filter(option)
+    default_session = {
+      enabled: false,
+      country_id: 0,
+      job_ids: []
+    }
+
+    session[:filter] ||= default_session
+
+    if option == "on"
+      session[:filter][:enabled] = true
+      session[:filter][:country_id] = params[:country_id].present? ? params[:country_id].to_i : 0
+      session[:filter][:job_ids] = params[:job_ids].present? ? params[:job_ids].reject.map(&:to_i) : []
+    end
+    if option == "off"
+      session[:filter] = default_session
+    end
+  end
+
 end

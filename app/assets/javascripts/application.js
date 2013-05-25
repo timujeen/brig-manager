@@ -14,4 +14,5 @@
 //= require jquery_ujs
 //= require jquery.tokeninput
 //= require tabs
+//= require chosen-jquery
 //= require_tree .

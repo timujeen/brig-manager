@@ -1,8 +1,8 @@
 Brig::Application.routes.draw do
+
   get "jobs", to: "jobs#index"
 
   resources :brigades
-
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

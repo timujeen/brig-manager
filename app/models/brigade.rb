@@ -13,4 +13,5 @@ class Brigade < ActiveRecord::Base
   def job_list
   	jobs.map(&:name).join(", ")  	
   end
+
 end

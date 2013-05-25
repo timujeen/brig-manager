@@ -1,0 +1,20 @@
+<%= form_tag("/brigades", method: 'get') do |f| %>  
+  
+  <%= link_to "Отключить фильтр", brigades_path(filtering: "disable") %>
+
+  <br />
+
+  <div class="field">
+    <%= label_tag "Страна:" %><br />
+    <%= select_tag :country_id, options_from_collection_for_select(Country.all, :id, :title,
+                    session[:filter][:country_id]), prompt: "Выберите страну" %>
+  </div>
+  <div class="field">
+    <%= label_tag "Виды работ:" %><br />
+    <%= select_tag :job_ids, options_from_collection_for_select(Job.all, :id, :name,
+                    session[:filter][:job_ids]), prompt: "Выберите работы", multiple: true %>
+  </div>
+  <div class="actions">
+    <%= submit_tag "Фильтровать" %>
+  </div>
+<% end %>

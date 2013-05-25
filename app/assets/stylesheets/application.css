@@ -13,5 +13,6 @@
  *= require layout
  *= require skeleton
  *= require token-input-facebook
+ *= require chosen
  *= require_tree .
  */
