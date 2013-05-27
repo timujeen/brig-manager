@@ -3,14 +3,10 @@ class BrigadesController < ApplicationController
   # GET /brigades.json
   def index
 
-    set_filter "off" if params[:filtering] == "disable"
+    turn_filter "off" if params[:filtering] == "disable" || session[:filter] == nil
+    turn_filter "on" if params[:filtering] == "enable" || params[:commit]
 
-    if params[:commit] #filtration is on
-      set_filter "on"
-      @brigades = brigades_filtered_by_options
-    else
-      @brigades = Brigade.order(:price)
-    end
+    @brigades = brigades_ordered_by_options(brigades_filtered_by_options)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -90,18 +86,24 @@ class BrigadesController < ApplicationController
     end
   end
 
-  def brigades_filtered_by_options
-    if session[:filter][:country_id] > 0
-      b = Brigade.where(country_id: session[:filter][:country_id]) if session[:filter][:country_id] > 0 
-    else
-      b = Brigade.order(:price)
-    end
-    b
-  end
-
   private
 
-  def set_filter(option)
+  def brigades_filtered_by_options
+    if session[:filter][:job_ids].present?
+      job_ids = session[:filter][:job_ids].to_s.gsub("[", "(").gsub("]", ")") #set [..] to "(..)"
+      brigades = Brigade.joins(:jobs).where("brigades_jobs.job_id in #{job_ids}")
+    else
+      brigades = Brigade
+    end
+    brigades = brigades.where(country_id: session[:filter][:country_id]) if session[:filter][:country_id] > 0
+    brigades
+  end
+  
+  def brigades_ordered_by_options(brigades)
+    params[:sort].present? ? brigades.order(params[:sort]) : brigades.order(:price) 
+  end
+
+  def turn_filter(option)
     default_session = {
       enabled: false,
       country_id: 0,
@@ -112,8 +114,10 @@ class BrigadesController < ApplicationController
 
     if option == "on"
       session[:filter][:enabled] = true
+      #if parameter exists then save it as integer, else save 0
       session[:filter][:country_id] = params[:country_id].present? ? params[:country_id].to_i : 0
-      session[:filter][:job_ids] = params[:job_ids].present? ? params[:job_ids].reject.map(&:to_i) : []
+      #if parameters exist then save it as array of integer (removing empty values), else save []
+      session[:filter][:job_ids] = params[:job_ids].present? ? params[:job_ids].reject(&:empty?).map(&:to_i) : []
     end
     if option == "off"
       session[:filter] = default_session
