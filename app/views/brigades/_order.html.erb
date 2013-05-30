@@ -1,0 +1,11 @@
+<p>Упорядочить по:</p>
+<table>
+  <tr>
+    <td><%= link_to "возрастанию цены", brigades_path(order: "price") %></td>
+    <td><%= link_to "убыванию цены", brigades_path(order: "price DESC") %></td>
+    <td><%= link_to "возрастанию количества рабочих", brigades_path(order: "count_of_workers") %></td>
+    <td><%= link_to "убыванию количества рабочих", brigades_path(order: "count_of_workers DESC") %></td>
+  </tr>
+</table>
+<br />
+<br />

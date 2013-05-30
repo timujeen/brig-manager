@@ -20,11 +20,19 @@ require 'spec_helper'
 
 describe BrigadesController do
 
+      Country.create(title: "Russia")
+    Job.create(name: "Wash")
+
+
   # This should return the minimal set of attributes required to create a valid
   # Brigade. As you add validations to Brigade, be sure to
   # update the return value of this method accordingly.
   def valid_attributes
-    { "title" => "MyString" }
+    { "title" => "MyString",
+      "count_of_workers" => 9,
+      "price" => 99.9,
+      "country_id" => Country.find_by_title("Russia").id,
+      "job_ids" => [Job.find_by_name("Wash").id] }
   end
 
   # This should return the minimal set of values that should be in the session

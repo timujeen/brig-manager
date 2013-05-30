@@ -1,12 +1,16 @@
+#encoding: utf-8
 class BrigadesController < ApplicationController
   # GET /brigades
   # GET /brigades.json
   def index
 
     turn_filter "off" if params[:filtering] == "disable" || session[:filter] == nil
-    turn_filter "on" if params[:filtering] == "enable" || params[:commit]
+    turn_filter "on" if params[:filtering] == "enable" || params[:commit] || params[:id_from_jobs]
 
-    @brigades = brigades_ordered_by_options(brigades_filtered_by_options)
+    @brigades = Brigade.filtered_and_ordered_by_params(
+      session[:filter][:country_id],
+      session[:filter][:job_ids],
+      params[:order])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -29,6 +33,7 @@ class BrigadesController < ApplicationController
   # GET /brigades/new
   # GET /brigades/new.json
   def new
+    session[:filter] = nil
     @brigade = Brigade.new
 
     respond_to do |format|
@@ -49,7 +54,7 @@ class BrigadesController < ApplicationController
 
     respond_to do |format|
       if @brigade.save
-        format.html { redirect_to brigades_url, notice: 'Brigade was successfully created.' }
+        format.html { redirect_to brigades_url, notice: 'Бригада успешно создана.' }
         format.json { render json: @brigade, status: :created, location: @brigade }
       else
         format.html { render action: "new" }
@@ -65,7 +70,7 @@ class BrigadesController < ApplicationController
 
     respond_to do |format|
       if @brigade.update_attributes(params[:brigade])
-        format.html { redirect_to brigades_url, notice: 'Brigade was successfully updated.' }
+        format.html { redirect_to brigades_url, notice: 'Бригада успешно обновлена.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
@@ -88,26 +93,12 @@ class BrigadesController < ApplicationController
 
   private
 
-  def brigades_filtered_by_options
-    if session[:filter][:job_ids].present?
-      job_ids = session[:filter][:job_ids].to_s.gsub("[", "(").gsub("]", ")") #set [..] to "(..)"
-      brigades = Brigade.joins(:jobs).where("brigades_jobs.job_id in #{job_ids}")
-    else
-      brigades = Brigade
-    end
-    brigades = brigades.where(country_id: session[:filter][:country_id]) if session[:filter][:country_id] > 0
-    brigades
-  end
-  
-  def brigades_ordered_by_options(brigades)
-    params[:sort].present? ? brigades.order(params[:sort]) : brigades.order(:price) 
-  end
-
   def turn_filter(option)
     default_session = {
       enabled: false,
       country_id: 0,
-      job_ids: []
+      job_ids: [],
+      id_from_jobs: 0 #id by link from jobs page
     }
 
     session[:filter] ||= default_session
@@ -117,7 +108,14 @@ class BrigadesController < ApplicationController
       #if parameter exists then save it as integer, else save 0
       session[:filter][:country_id] = params[:country_id].present? ? params[:country_id].to_i : 0
       #if parameters exist then save it as array of integer (removing empty values), else save []
-      session[:filter][:job_ids] = params[:job_ids].present? ? params[:job_ids].reject(&:empty?).map(&:to_i) : []
+      #if parameter comes from jobs page then save it array of one
+      session[:filter][:job_ids] = if params[:id_from_jobs].present?
+        [params[:id_from_jobs].to_i]
+      elsif params[:job_ids].present?        
+        params[:job_ids].reject(&:empty?).map(&:to_i)
+      else
+        []
+      end
     end
     if option == "off"
       session[:filter] = default_session

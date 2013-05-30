@@ -1,25 +1,16 @@
+<p id="notice"><%= notice %></p>
 <h1>Список бригад</h1>
 
 <% if session[:filter][:enabled] %>  
   <%= render 'filter' %>
 <% else %>
   <%= link_to "Включить фильтр", brigades_path(filtering: "enable") %>
+  <br />
+  <br />
 <% end %>
-<br />
-<br />
-<p>Упорядочить по:</p>
 
-<table>
-  <tr>
-    <td><%= link_to "увеличению цены", brigades_path(sort: "price") %></td>
-    <td><%= link_to "уменьшению цены", brigades_path(sort: "price DESC") %></td>
-    <td><%= link_to "увеличению количества рабочих", brigades_path(sort: "count_of_workers") %></td>
-    <td><%= link_to "уменьшению количества рабочих", brigades_path(sort: "count_of_workers DESC") %></td>
-  </tr>
-</table>
-<br />
-<br />
-
+<% if @brigades.present? %>
+<%= render 'order' if @brigades.length > 1 %>
 <table>
   <tr>
     <th>Название</th>
@@ -43,7 +34,12 @@
   </tr>
 <% end %>
 </table>
+<% else %>
+<p>Список бригад пуст.</p>
+<% end %>
 
 <br />
 
-<%= link_to 'Новая бригада', new_brigade_path %>
+<%= link_to 'Новая бригада', new_brigade_path %> | 
+<%= link_to 'Список работ', jobs_path %>
+

@@ -18,7 +18,7 @@ describe "brigades/new" do
       assert_select "input#brigade_title[name=?]", "brigade[title]"
       assert_select "input#brigade_count_of_workers[name=?]", "brigade[count_of_workers]"
       assert_select "input#brigade_price[name=?]", "brigade[price]"
-      assert_select "input#brigade_country_id[name=?]", "brigade[country_id]"
+      assert_select "select#brigade_country_id[name=?]", "brigade[country_id]"
     end
   end
 end
