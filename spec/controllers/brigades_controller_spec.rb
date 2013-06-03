@@ -20,41 +20,37 @@ require 'spec_helper'
 
 describe BrigadesController do
 
-      Country.create(title: "Russia")
-    Job.create(name: "Wash")
-
 
   # This should return the minimal set of attributes required to create a valid
   # Brigade. As you add validations to Brigade, be sure to
   # update the return value of this method accordingly.
-  def valid_attributes
-    { "title" => "MyString",
+  def valid_attributes(title="MyString")
+    { "title" => title,
       "count_of_workers" => 9,
       "price" => 99.9,
-      "country_id" => Country.find_by_title("Russia").id,
-      "job_ids" => [Job.find_by_name("Wash").id] }
+      "country_id" => Country.find_or_create_by_title("Russia").id,
+      "job_ids" => [Job.find_or_create_by_name("Wash").id] }
   end
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # BrigadesController. Be sure to keep this updated too.
   def valid_session
-    {}
+    { enabled: false,
+      country_id: 0,
+      job_ids: [] }
   end
 
   describe "GET index" do
     it "assigns all brigades as @brigades" do
       brigade = Brigade.create! valid_attributes
-      get :index, {}, valid_session
+      get :index
       assigns(:brigades).should eq([brigade])
     end
-  end
-
-  describe "GET show" do
-    it "assigns the requested brigade as @brigade" do
-      brigade = Brigade.create! valid_attributes
-      get :show, {:id => brigade.to_param}, valid_session
-      assigns(:brigade).should eq(brigade)
+    it "should initialize a filter" do
+      session[:filter].should eq(nil)
+      get :index
+      session[:filter].should eq(valid_session)
     end
   end
 
@@ -87,9 +83,9 @@ describe BrigadesController do
         assigns(:brigade).should be_persisted
       end
 
-      it "redirects to the created brigade" do
+      it "redirects to the brigades index" do
         post :create, {:brigade => valid_attributes}, valid_session
-        response.should redirect_to(Brigade.last)
+        response.should redirect_to(brigades_url)
       end
     end
 
@@ -128,10 +124,10 @@ describe BrigadesController do
         assigns(:brigade).should eq(brigade)
       end
 
-      it "redirects to the brigade" do
+      it "redirects to the brigades index" do
         brigade = Brigade.create! valid_attributes
         put :update, {:id => brigade.to_param, :brigade => valid_attributes}, valid_session
-        response.should redirect_to(brigade)
+        response.should redirect_to(brigades_url)
       end
     end
 

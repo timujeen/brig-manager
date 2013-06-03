@@ -19,17 +19,6 @@ class BrigadesController < ApplicationController
     end
   end
 
-  # GET /brigades/1
-  # GET /brigades/1.json
-  def show
-    @brigade = Brigade.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @brigade }
-    end
-  end
-
   # GET /brigades/new
   # GET /brigades/new.json
   def new
@@ -98,7 +87,6 @@ class BrigadesController < ApplicationController
       enabled: false,
       country_id: 0,
       job_ids: [],
-      id_from_jobs: 0 #id by link from jobs page
     }
 
     session[:filter] ||= default_session

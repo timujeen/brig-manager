@@ -1,7 +1,7 @@
 Brig::Application.routes.draw do
 
   resources :jobs, only: [:index, :destroy]
-  resources :brigades
+  resources :brigades, except: [:show]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

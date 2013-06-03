@@ -2,8 +2,9 @@ class Job < ActiveRecord::Base
   attr_accessible :name
   has_and_belongs_to_many :brigades
 
-  scope :ordered_by_count_of_brigades, joins(:brigades).group("brigades_jobs.job_id").order("COUNT(*) DESC")
-
+  scope :ordered_by_count_of_brigades,  joins("LEFT JOIN brigades_jobs ON brigades_jobs.job_id = jobs.id").
+                                        group("jobs.id").
+                                        order("COUNT(DISTINCT brigades_jobs.brigade_id) DESC")
   def self.tokens(query)
   	jobs = where("name like ?", "%#{query}%")
   	if jobs.empty?

@@ -1,3 +1,4 @@
+#encoding: utf-8
 Given(/^I have no brigades$/) do
   Brigade.delete_all
 end
@@ -68,4 +69,11 @@ Given(/^I have brigade titled (.+) with country "(.*?)" and with jobs "(.*?)"$/)
     brigade.jobs << Job.where(name: j.strip)
   end
   brigade.save
+end
+
+When(/^I fill "(.*?)" with "(.*?)"$/) do |field, job_names|
+  job_ids = []
+  job_names.split(",").each {|job| job_ids << Job.find_or_create_by_name(job.strip).id}
+  job_str = job_ids.to_s.gsub("[", "").gsub("]", "")
+  fill_in(field, with: job_str)
 end

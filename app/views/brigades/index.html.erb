@@ -1,12 +1,14 @@
 <p id="notice"><%= notice %></p>
 <h1>Список бригад</h1>
 
-<% if session[:filter][:enabled] %>  
-  <%= render 'filter' %>
-<% else %>
-  <%= link_to "Включить фильтр", brigades_path(filtering: "enable") %>
-  <br />
-  <br />
+<% if session[:filter].present? %>  
+  <% if session[:filter][:enabled] %>
+    <%= render 'filter' %>
+  <% else %>
+    <%= link_to "Включить фильтр", brigades_path(filtering: "enable") %>
+    <br />
+    <br />
+  <% end %>
 <% end %>
 
 <% if @brigades.present? %>

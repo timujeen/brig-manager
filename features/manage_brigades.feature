@@ -13,7 +13,7 @@ Feature: Manage brigades
 		And I fill in "Количество рабочих" with "10"
 		And I fill in "Стоимость (USD)" with "100"
 		And I select "Russia" from "Страна"
-		And I fill in "Виды работ" with "2,3"
+		And I fill "Виды работ" with "wash,dry,clean"
 		And I press "Сохранить"
 		Then I should be redirected to the list of brigades
 		And I should see "Бригада успешно создана."
@@ -21,8 +21,9 @@ Feature: Manage brigades
 		And I should see "10"
 		And I should see "100.0"
 		And I should see "Russia"
-		And I should see "wash, dry"
+		And I should see "wash, dry, clean"
 		And I should have 1 brigade
+		And I should have 3 jobs
 
 	Scenario: Filtering brigades by link from jobs list
 		Given I have jobs titled Wash, Dry, Clean

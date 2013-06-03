@@ -10,6 +10,3 @@ Country.delete_all
 Country.create!(title: 'Россия')
 Country.create!(title: 'Китай')
 Country.create!(title: 'Германия')
-
-Filtering.delete_all
-Filtering.create!(enabled: false, country_id: nil)
